@@ -1,9 +1,10 @@
 # 🛰️ personal-ai-os
 
-> **Hand this repo to Claude Code and get your own 24/7 personal AI operating system.**
-> A self-hosted personal agent that lives on a tiny VPS, talks to you on Telegram & Slack,
-> reads your calendar and email, runs your morning briefing, builds its own skills, and
-> turns your documents into a queryable second brain.
+> **Hand this repo to Claude Code, and it will guide you through building your own 24/7 personal AI operating system.**
+> A self-hosted personal agent — built on the **[Hermes](https://github.com/nousresearch/hermes-agent)**
+> agent — that lives on a tiny VPS and chats with you in the app *you* choose: Telegram, Slack, or
+> another channel (WhatsApp, Discord, Signal …). It reads your calendar and email, runs your morning
+> briefing, builds its own skills, and turns your documents into a queryable second brain.
 
 `personal-ai-os` is **not** a single app you install. It's a **guided blueprint**: a set of
 chronological playbooks plus generalized templates that a coding agent (Claude Code) reads and
@@ -13,7 +14,7 @@ for a few euros a month.
 
 ```
               ┌──────────────────────────────────────────────┐
-              │  YOU  ── Telegram / Slack ──►  HERMES AGENT    │
+              │  YOU  ── your chat app ──►  HERMES AGENT       │
               └──────────────────────────────────────────────┘
                                   │ (24/7 systemd service on your VPS)
         ┌─────────────┬───────────┼────────────┬───────────────┬──────────────┐
@@ -31,7 +32,7 @@ for a few euros a month.
 ## ✨ What you get
 
 - **A personal agent on your own VPS** — runs 24/7 as a `systemd` service, costs ~€5–6/mo for the box.
-- **Chat from anywhere** — Telegram and/or Slack, one agent behind both.
+- **Chat in the app you pick** — Telegram or Slack out of the box; WhatsApp Business, Discord, Signal and more as optional add-ons. **Choose one to start.**
 - **Cheap, capable brain** — [DeepSeek](https://platform.deepseek.com) by default (a `pro` and a ~3× cheaper `flash` tier you can switch per message), with image understanding routed to a vision model.
 - **Real productivity skills** — calendar, to-dos/reminders, email triage, web research with sources, YouTube transcripts, maps.
 - **A daily morning briefing** — calendar + tasks + unread mail + LLM spend, pushed to your chat every morning.

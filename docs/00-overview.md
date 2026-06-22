@@ -17,7 +17,7 @@ briefing, an optional second brain, a dashboard, and a self-improvement loop.
 Think of it like an operating system for your digital life:
 
 - **Kernel** → the Hermes agent + its gateway (always running as a `systemd` service).
-- **Shell** → your chat apps (Telegram, Slack). You talk; it acts.
+- **Shell** → the chat app you choose (Telegram, Slack, …). You talk; it acts.
 - **Drivers** → *skills*: calendar, tasks, mail, web, notes. Each is a small folder with a
   script the agent calls.
 - **Scheduler** → *crons*: the morning briefing and the dashboard export.

@@ -61,7 +61,8 @@ early so you can explain the big picture to the user.
    user at the README if they want to read first.
 2. **Discovery questions (ask before planning).** Gather:
    - Do you already have a VPS, or should we provision one (Hetzner is the documented example)?
-   - Which chat channel(s): Telegram, Slack, or both?
+   - Which chat channel to start with — Telegram or Slack? (Most people pick **one**; more channels
+     like WhatsApp Business are optional add-ons in docs/15.)
    - LLM budget / preference (DeepSeek is the cheap default; any OpenAI-compatible API works).
    - Which capabilities do you want? Calendar, to-dos/reminders, email, web search, YouTube,
      notes, **Second Brain Pipeline**, **morning briefing**, dashboard, self-improvement.

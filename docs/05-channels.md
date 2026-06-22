@@ -1,8 +1,10 @@
-# 05 — Channels: Telegram & Slack
+# 05 — Channels: pick one (Telegram or Slack)
 
 > **Agent note:** Do this right after the LLM so the user gets a working chat loop early — it's the
-> first "wow". Ask which channel(s) they want; both is fine (one agent behind both). Tokens go in
-> `~/.hermes/.env`, never in this repo.
+> first "wow". **Have the user pick ONE channel to start** — Telegram or Slack. Running both is
+> possible (one agent behind both), but one is the norm; they can add more later. More channels
+> (WhatsApp Business, Discord, Signal…) are optional add-ons in [15-ideas.md](15-ideas.md). Tokens
+> go in `~/.hermes/.env`, never in this repo.
 
 The **gateway** connects chat platforms to the agent and detects which platforms to enable from the
 tokens present in `.env`. Restart it after adding tokens:
