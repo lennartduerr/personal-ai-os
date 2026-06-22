@@ -36,7 +36,7 @@ for a few euros a month.
 - **Real productivity skills** — calendar, to-dos/reminders, email triage, web research with sources, YouTube transcripts, maps.
 - **A daily morning briefing** — calendar + tasks + unread mail + LLM spend, pushed to your chat every morning.
 - **A second brain** — drop any document (PDF, Word, email…) and it becomes a clean, queryable Markdown knowledge base via the [Second Brain Pipeline](https://github.com/lennartduerr/second-brain-pipeline).
-- **A read-only web dashboard** — your briefing at a glance, hosted free on Vercel (no live LLM cost).
+- **A read-only web dashboard** — your briefing at a glance, hosted free on Vercel. You just make a Vercel account; **Claude Code deploys and hosts it for you** (no live LLM cost).
 - **A self-improvement loop** — ask the agent to "build me a new skill" and it delegates to Claude Code on the VPS, shows you the diff, and ships it after your OK.
 
 Everything is **opt-in**. You pick the pieces you want; the rest is skipped. (Advanced users can
@@ -46,7 +46,11 @@ also wire in workflow automation — see [docs/13](docs/13-n8n-orchestration.md)
 
 ## 🚀 Quickstart (the 3-step install)
 
-1. **Clone this repo**
+> 💡 **Use it as a template:** click **"Use this template"** at the top of the
+> [GitHub repo](https://github.com/lennartduerr/personal-ai-os) to create your own copy in one
+> click — then point Claude Code at it. (Or just clone it as below.)
+
+1. **Clone this repo** (skip if you used "Use this template")
    ```bash
    git clone https://github.com/lennartduerr/personal-ai-os.git
    cd personal-ai-os

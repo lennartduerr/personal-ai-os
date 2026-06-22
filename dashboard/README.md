@@ -17,24 +17,32 @@ the page renders it, so viewing it is free. Password-gated with a signed cookie.
 
 ## Deploy
 
+**You barely have to do anything.** Create a free **[Vercel](https://vercel.com)** account and
+authenticate the CLI once (`vercel login`, or paste an account token) — then let **Claude Code do
+the rest**: it links the project, generates and sets the env vars, connects Blob storage, deploys,
+and gives you the URL. See [../docs/11-dashboard-vercel.md](../docs/11-dashboard-vercel.md).
+
+Doing it by hand instead:
+
 ```bash
 cd dashboard
 npm install
-npx vercel            # link/create the project (first run)
-npx vercel --prod     # deploy to production
+vercel link --yes
+printf '%s' "$(openssl rand -hex 32)" | vercel env add AUTH_SECRET production
+printf '%s' "$(openssl rand -hex 32)" | vercel env add INGEST_SECRET production
+printf '%s' "your-password"           | vercel env add DASHBOARD_PASSWORD production
+# connect a Blob store (Storage → Blob) → gives BLOB_READ_WRITE_TOKEN, then:
+vercel --prod
 ```
 
-Create a **Blob store** in the Vercel project (Storage → Blob) — this auto-adds
-`BLOB_READ_WRITE_TOKEN`. Then set env vars (Production + Preview):
+Env vars used:
 
 | Var | Meaning |
 |-----|---------|
 | `DASHBOARD_PASSWORD` | the login password |
 | `AUTH_SECRET` | random string used to sign the session cookie |
 | `INGEST_SECRET` | random string the VPS sends as a Bearer token |
-| `BLOB_READ_WRITE_TOKEN` | added automatically with the Blob store |
-
-Generate randoms with `openssl rand -hex 32`.
+| `BLOB_READ_WRITE_TOKEN` | added automatically with the connected Blob store |
 
 ## Wire the VPS exporter
 

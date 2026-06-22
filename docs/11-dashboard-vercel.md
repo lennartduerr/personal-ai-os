@@ -27,27 +27,49 @@ VPS (briefing_export.py)  ── once or a few times/day ──►  POST /api/in
 - **Storage:** Vercel Blob (private). No database needed.
 - **Cost:** free tier; each pageview is static rendering, no model calls.
 
-## Step 1 — Deploy the dashboard
+## Step 1 — Deploy the dashboard (Claude Code does almost all of it)
 
-From the [`../dashboard/`](../dashboard/) starter (Next.js App Router):
+> **Agent note:** This is a "you do the work" phase. The user's only manual steps are creating a
+> Vercel account and authenticating the CLI once. After that, **you** link the project, set env
+> vars, connect storage, deploy, and hand back the URL. Don't make the user click through the
+> dashboard UI for things the CLI can do.
 
+**The user's only job (2 minutes):**
+1. Create a free account at **https://vercel.com**.
+2. Authenticate the CLI once — either `vercel login` (a browser click) **or** create a token at
+   **Account → Settings → Tokens** and paste it so you can run fully non-interactively
+   (`vercel --token <TOKEN>` / `export VERCEL_TOKEN=...`).
+
+**What you (Claude Code) then do:**
 ```bash
 cd dashboard
 npm install
-npx vercel              # link/create the project (first run)
-npx vercel --prod       # deploy to production
+vercel link --yes                      # create/link the Vercel project
+# generate secrets and push them as env vars (repeat for preview if you want previews):
+printf '%s' "$(openssl rand -hex 32)" | vercel env add AUTH_SECRET production
+printf '%s' "$(openssl rand -hex 32)" | vercel env add INGEST_SECRET production
+printf '%s' "<password the user picked>" | vercel env add DASHBOARD_PASSWORD production
 ```
 
-Set these environment variables in the Vercel project (Production + Preview):
+Connect Blob storage (gives you `BLOB_READ_WRITE_TOKEN`):
+- Create/connect a **Blob store** for the project, then pull its token into the project env.
+  Use the CLI if your version supports `vercel blob`/`vercel storage`; otherwise this is the **one**
+  ~30-second click for the user in the Vercel dashboard (Storage → Blob → Connect). After it's
+  connected, `vercel env pull` to confirm `BLOB_READ_WRITE_TOKEN` is present.
+
+Deploy:
+```bash
+vercel --prod                          # build + deploy; capture the production URL
+```
+
+Then tell the user their dashboard URL. Env vars you set:
 
 | Var | Meaning |
 |-----|---------|
 | `DASHBOARD_PASSWORD` | the login password for the page |
 | `AUTH_SECRET` | random string used to sign the auth cookie |
 | `INGEST_SECRET` | random string the VPS sends as a Bearer token |
-| `BLOB_READ_WRITE_TOKEN` | auto-added when you create a Blob store |
-
-Create a **Blob store** in the Vercel dashboard (Storage → Blob), set it to **private**.
+| `BLOB_READ_WRITE_TOKEN` | from the connected Blob store |
 
 ## Step 2 — Wire the VPS exporter
 
