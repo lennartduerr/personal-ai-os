@@ -12,20 +12,65 @@ then **walks you through, step by step**, asking what you actually want at every
 end you own a setup like the one this repo was distilled from — running on hardware you control,
 for a few euros a month.
 
+```mermaid
+flowchart TB
+    you(["📱 You — your chat app<br/>Telegram / Slack / …"])
+
+    subgraph VPS["🖥️ Your VPS — runs 24/7 · e.g. Hetzner ~€5/mo"]
+        direction TB
+        gw["Hermes Gateway<br/>systemd service"]
+        agent["🧠 Hermes Agent"]
+        llm["LLM · DeepSeek<br/>vision → OpenRouter"]
+
+        subgraph skills["🧩 Skills"]
+            direction LR
+            cal["📅 Calendar"]
+            tasks["✅ Tasks"]
+            mail["📧 Mail"]
+            web["🔎 Web"]
+            notes["📝 Notes"]
+        end
+
+        subgraph crons["⏰ Cron jobs"]
+            direction LR
+            brief["🌅 Morning briefing"]
+            exp["📤 Dashboard export"]
+        end
+
+        self["🔧 Self-improve<br/>via Claude Code"]
+    end
+
+    subgraph brain["✨ Second Brain Pipeline — your LLM Wiki ✨"]
+        direction LR
+        ingest["Parse → Extract<br/>→ Compile → Lint"]
+        wiki[("📚 brain/ — queryable<br/>knowledge base<br/>no RAG · no chunking")]
+    end
+
+    dash["📊 Read-only Dashboard<br/>Vercel · free"]
+
+    you <--> gw
+    gw --> agent
+    agent --> llm
+    agent --> skills
+    agent --> self
+    docs["📄 Your documents<br/>PDF · Word · email · notes"] --> ingest
+    notes --> ingest
+    ingest --> wiki
+    wiki ==> agent
+    brief --> you
+    exp --> dash
+    you -. view .-> dash
+
+    style brain fill:#10243f,stroke:#6ea8fe,stroke-width:4px,color:#e6f0ff
+    style wiki fill:#16365c,stroke:#6ea8fe,stroke-width:2px,color:#ffffff
+    style ingest fill:#13294a,stroke:#6ea8fe,color:#e6f0ff
+    style agent fill:#1d2630,stroke:#9aa0aa,stroke-width:2px,color:#ffffff
+    style you fill:#222,stroke:#9aa0aa,color:#fff
 ```
-              ┌──────────────────────────────────────────────┐
-              │  YOU  ── your chat app ──►  HERMES AGENT       │
-              └──────────────────────────────────────────────┘
-                                  │ (24/7 systemd service on your VPS)
-        ┌─────────────┬───────────┼────────────┬───────────────┬──────────────┐
-        ▼             ▼           ▼            ▼               ▼              ▼
-   DeepSeek LLM   Calendar     Mail        Web search      Notes /        Self-improve
-   (+ Vision)     & Tasks    (read/relay)  (Tavily)     Second Brain    (Claude Code)
-        │                                                     │
-        ▼                                                     ▼
-  Daily briefing  ───────────────────────────────►   Read-only Dashboard (Vercel)
-                                                       Second Brain Pipeline (ingest docs)
-```
+
+<sub>The **Second Brain Pipeline** is its own branch: your documents (and the agent's notes) are
+compiled into an **LLM Wiki** — a plain-Markdown knowledge base the agent reads directly (no RAG, no
+vector DB). Everything else runs on one small VPS.</sub>
 
 ---
 
@@ -33,10 +78,10 @@ for a few euros a month.
 
 - **A personal agent on your own VPS** — runs 24/7 as a `systemd` service, costs ~€5–6/mo for the box.
 - **Chat in the app you pick** — Telegram or Slack out of the box; WhatsApp Business, Discord, Signal and more as optional add-ons. **Choose one to start.**
-- **Cheap, capable brain** — [DeepSeek](https://platform.deepseek.com) by default (a `pro` and a ~3× cheaper `flash` tier you can switch per message), with image understanding routed to a vision model.
+- **A cheap, capable brain (the LLM)** — [DeepSeek](https://platform.deepseek.com) by default: a `pro` tier and a ~3× cheaper `flash` tier you switch per message, with images routed to a vision model. Want to shop around? Point it at [OpenRouter](https://openrouter.ai) to A/B different models and **calculate which is most worth it** for your usage.
 - **Real productivity skills** — calendar, to-dos/reminders, email triage, web research with sources, YouTube transcripts, maps.
 - **A daily morning briefing** — calendar + tasks + unread mail + LLM spend, pushed to your chat every morning.
-- **A second brain** — drop any document (PDF, Word, email…) and it becomes a clean, queryable Markdown knowledge base via the [Second Brain Pipeline](https://github.com/lennartduerr/second-brain-pipeline).
+- **A second brain — your own "LLM Wiki"** — powered by a **whole separate project with its own repo: the [Second Brain Pipeline](https://github.com/lennartduerr/second-brain-pipeline)**. Drop any document (PDF, Word, email…) and it's compiled into a clean, queryable Markdown knowledge base your agent reads like a wiki — **no RAG, no chunking, no vector DB**.
 - **A read-only web dashboard** — your briefing at a glance, hosted free on Vercel. You just make a Vercel account; **Claude Code deploys and hosts it for you** (no live LLM cost).
 - **A self-improvement loop** — ask the agent to "build me a new skill" and it delegates to Claude Code on the VPS, shows you the diff, and ships it after your OK.
 
@@ -47,9 +92,10 @@ also wire in workflow automation — see [docs/13](docs/13-n8n-orchestration.md)
 
 ## 🚀 Quickstart (the 3-step install)
 
-> 💡 **Use it as a template:** click **"Use this template"** at the top of the
-> [GitHub repo](https://github.com/lennartduerr/personal-ai-os) to create your own copy in one
-> click — then point Claude Code at it. (Or just clone it as below.)
+> 💡 **Just installing once?** Clone it (step 1 below) — that's all you need. **Want to keep and
+> customize your own version** (your `SOUL.md`, your skills, your dashboard tweaks)? Click
+> **"Use this template"** on the [GitHub repo](https://github.com/lennartduerr/personal-ai-os) to
+> create a fresh repo in *your* account. Either way, then point Claude Code at the files.
 
 1. **Clone this repo** (skip if you used "Use this template")
    ```bash
