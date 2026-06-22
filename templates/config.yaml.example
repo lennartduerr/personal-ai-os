@@ -1,0 +1,62 @@
+# =============================================================================
+# Hermes config — EXAMPLE. Copy to ~/.hermes/config.yaml and edit.
+# Values like ${VAR} are read from ~/.hermes/.env. Keep only what you use.
+# Check the Hermes repo for the authoritative config schema:
+#   https://github.com/nousresearch/hermes-agent
+# =============================================================================
+
+timezone: Europe/Berlin
+
+# --- Primary model (DeepSeek by default; any OpenAI-compatible API works) -----
+model:
+  provider: custom
+  base_url: https://api.deepseek.com/v1
+  model: deepseek-v4-pro
+  api_key: ${DEEPSEEK_API_KEY}
+
+# Switch tiers in chat with: /model flash   /model pro
+model_aliases:
+  flash:
+    provider: custom
+    base_url: https://api.deepseek.com/v1
+    model: deepseek-v4-flash
+    api_key: ${DEEPSEEK_API_KEY}
+  pro:
+    provider: custom
+    base_url: https://api.deepseek.com/v1
+    model: deepseek-v4-pro
+    api_key: ${DEEPSEEK_API_KEY}
+
+# --- Vision (images) — optional, routed to OpenRouter -------------------------
+auxiliary:
+  vision:
+    provider: openrouter
+    model: google/gemini-2.5-flash
+    api_key: ${OPENROUTER_API_KEY}
+image_input_mode: auto
+
+# --- Custom skills ------------------------------------------------------------
+skills:
+  external_dirs:
+    - /home/hermes/.hermes/custom-skills
+
+# --- Web access (optional) ----------------------------------------------------
+web:
+  search_backend: tavily
+  extract_backend: tavily
+
+# --- Channels -----------------------------------------------------------------
+telegram:
+  allowed_chats:
+    - 000000000        # <-- your numeric chat id
+
+# --- Display ------------------------------------------------------------------
+display:
+  tool_progress: all
+  platforms:
+    telegram:
+      tool_progress: off      # hide raw command breadcrumbs on Telegram
+
+# --- Approvals ----------------------------------------------------------------
+approvals:
+  cron_mode: deny             # scheduled runs: block dangerous cmds (rm/sudo/git), allow safe skills

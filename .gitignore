@@ -1,0 +1,32 @@
+# Secrets — never commit
+.env
+.env.local
+*.pass
+*credentials*.json
+client_secret_*.json
+*_token.json
+hosts.yml
+
+# Node / Next.js (dashboard)
+node_modules/
+.next/
+out/
+dist/
+.vercel/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local-only working dirs you should never publish
+hermes-notes/
+brain/
+sessions/
+logs/

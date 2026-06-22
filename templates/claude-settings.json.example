@@ -1,0 +1,14 @@
+{
+  "_comment": "Copy to ~/.hermes/.claude/settings.json. Protects secrets from the self-improve loop (docs/12).",
+  "permissions": {
+    "deny": [
+      ".env",
+      ".env.*",
+      "*.pass",
+      "*credentials*.json",
+      "*_token.json",
+      "~/.config/gh/**",
+      "hosts.yml"
+    ]
+  }
+}

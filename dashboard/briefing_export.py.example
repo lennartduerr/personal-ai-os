@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""briefing_export — gather the daily briefing on the VPS and push it to the dashboard.
+
+Runs on the VPS (stdlib only, no pip deps). Copy to ~/.hermes/scripts/briefing_export.py.
+Scheduled by a --no-agent cron (see templates/crons/dashboard-export.md). Stays silent on success;
+exits non-zero (and prints) on failure so the cron alerts you.
+
+Reads from env:
+  DASHBOARD_INGEST_URL     e.g. https://<your-dashboard>.vercel.app/api/ingest
+  DASHBOARD_INGEST_SECRET  must match INGEST_SECRET on Vercel
+
+This is a SCAFFOLD: the data-gathering calls are marked TODO — wire them to your installed skills.
+"""
+import json
+import os
+import subprocess
+import sys
+import urllib.request
+from datetime import datetime, timezone
+
+HOME = os.path.expanduser("~")
+SKILLS = f"{HOME}/.hermes/custom-skills"
+
+
+def run(cmd: list[str]) -> str:
+    """Run a command, return stdout, raise on failure."""
+    return subprocess.run(cmd, capture_output=True, text=True, check=True).stdout.strip()
+
+
+def safe(label: str, fn):
+    """Run a gather function; on error, return an error marker instead of crashing the whole export."""
+    try:
+        return fn()
+    except Exception as e:  # noqa: BLE001
+        return [f"⚠️ {label} error: {e}"]
+
+
+def gather_calendar():
+    # TODO: parse your calendar skill output into a list of strings or {text, sub} items.
+    out = run([f"{SKILLS}/calendar/scripts/caldav.py", "list-events", "--days", "2"])
+    return [line for line in out.splitlines() if line.strip()]
+
+
+def gather_tasks():
+    # TODO: map google_tasks list-tasks output to items.
+    out = run([f"{SKILLS}/google-tasks/scripts/google_tasks.py", "list-tasks"])
+    return [line for line in out.splitlines() if line.strip()]
+
+
+def gather_mail():
+    # TODO: summarize noteworthy unread mail (last 24h), skipping newsletters/promos.
+    return []
+
+
+def gather_cost():
+    # TODO: read your LLM balance/spend (e.g. a deepseek_status.py) and return {spent24h, balance}.
+    return None
+
+
+def gather_brain():
+    # TODO (optional): `sbp status --json` → {"status": "..."} if you use the Second Brain Pipeline.
+    return None
+
+
+def main():
+    url = os.environ.get("DASHBOARD_INGEST_URL")
+    secret = os.environ.get("DASHBOARD_INGEST_SECRET")
+    if not url or not secret:
+        sys.exit("Missing DASHBOARD_INGEST_URL / DASHBOARD_INGEST_SECRET.")
+
+    payload = {
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "calendar": safe("calendar", gather_calendar),
+        "tasks": safe("tasks", gather_tasks),
+        "mail": safe("mail", gather_mail),
+        "cost": gather_cost(),
+        "brain": gather_brain(),
+    }
+
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        method="POST",
+        headers={"Authorization": f"Bearer {secret}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        if resp.status >= 300:
+            sys.exit(f"Ingest failed: HTTP {resp.status}")
+    # success → no output (cron stays quiet)
+
+
+if __name__ == "__main__":
+    main()

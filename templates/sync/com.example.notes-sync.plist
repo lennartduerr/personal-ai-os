@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+macOS launchd job to run icloud-sync.sh every 5 minutes.
+Copy to ~/Library/LaunchAgents/com.example.notes-sync.plist (rename label to your own),
+edit the script path, then:
+  launchctl load ~/Library/LaunchAgents/com.example.notes-sync.plist
+Unload with: launchctl unload ~/Library/LaunchAgents/com.example.notes-sync.plist
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.example.notes-sync</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/CHANGE_ME/.personal-ai-os-sync/icloud-sync.sh</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>300</integer>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardErrorPath</key>
+    <string>/tmp/personal-ai-os-notes-sync.err</string>
+    <key>StandardOutPath</key>
+    <string>/tmp/personal-ai-os-notes-sync.out</string>
+</dict>
+</plist>

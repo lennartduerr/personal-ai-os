@@ -1,0 +1,25 @@
+# CLAUDE.md (on the VPS) — guardrails for the self-improve loop (EXAMPLE)
+
+Copy to `~/.hermes/CLAUDE.md`. These are standing instructions for **Claude Code running on the
+VPS** when the agent delegates a self-improvement task (see docs/12-self-improve.md).
+
+## Mission
+You are improving this Hermes install: fixing bugs, building skills, refining behavior. The agent
+itself runs as a systemd service (`hermes-gateway`). Make focused, reviewable changes.
+
+## Hard rules
+- **Never** read, write, print, or commit secrets: `.env`, `*.pass`, `*credentials*.json`,
+  `*_token.json`, `~/.config/gh/**`. (These are also blocked by `.claude/settings.json`.)
+- **Back up** any file before editing: `cp f f.bak.$(date +%s)`.
+- Keep changes **small**; explain what you changed and why.
+- **Do not auto-commit and do not restart the gateway.** Return a summary + `git diff` and stop.
+  A human approves, then commits and restarts.
+- Test where possible: `hermes -z "..."`, and any relevant `pytest`.
+
+## Useful paths
+- Code: `~/.hermes/hermes-agent/`   • Config: `~/.hermes/config.yaml`   • Persona: `~/.hermes/SOUL.md`
+- Custom skills: `~/.hermes/custom-skills/`   • Scripts: `~/.hermes/scripts/`
+
+## Gateway
+- Status/logs: `sudo hermes gateway status --system` · `sudo journalctl -u hermes-gateway`
+- Restart (humans only, after approval): `sudo hermes gateway restart --system`
