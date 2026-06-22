@@ -12,71 +12,44 @@ then **walks you through, step by step**, asking what you actually want at every
 end you own a setup like the one this repo was distilled from — running on hardware you control,
 for a few euros a month.
 
-```mermaid
-flowchart TB
-    you(["📱 You — your chat app<br/>Telegram / Slack / …"])
+```
+                 YOU  ──(Telegram / Slack / WhatsApp / …)──►  HERMES AGENT
+                                                                  │
+                                                  runs 24/7 on your own VPS
+                                                                  │
+        ┌───────────────────┬───────────────────┼───────────────────┐
+        ▼                   ▼                   ▼                   ▼
+       LLM                SKILLS             CRON JOBS          SELF-IMPROVE
+   DeepSeek (cheap)    calendar · tasks    morning briefing    Claude Code
+   or any model via    mail · web ·        + dashboard         rewrites &
+   OpenRouter          notes · maps        export              builds skills
+                                                  │
+                                                  ▼
+                              Telegram / Slack   +   Dashboard (Vercel, free)
 
-    subgraph VPS["🖥️ Your VPS — runs 24/7 · e.g. Hetzner ~€5/mo"]
-        direction TB
-        gw["Hermes Gateway<br/>systemd service"]
-        agent["🧠 Hermes Agent"]
-        llm["LLM · DeepSeek<br/>vision → OpenRouter"]
 
-        subgraph skills["🧩 Skills"]
-            direction LR
-            cal["📅 Calendar"]
-            tasks["✅ Tasks"]
-            mail["📧 Mail"]
-            web["🔎 Web"]
-            notes["📝 Notes"]
-        end
-
-        subgraph crons["⏰ Cron jobs"]
-            direction LR
-            brief["🌅 Morning briefing"]
-            exp["📤 Dashboard export"]
-        end
-
-        self["🔧 Self-improve<br/>via Claude Code"]
-    end
-
-    subgraph brain["✨ Second Brain Pipeline — your LLM Wiki ✨"]
-        direction LR
-        ingest["Parse → Extract<br/>→ Compile → Lint"]
-        wiki[("📚 brain/ — queryable<br/>knowledge base<br/>no RAG · no chunking")]
-    end
-
-    dash["📊 Read-only Dashboard<br/>Vercel · free"]
-
-    you <--> gw
-    gw --> agent
-    agent --> llm
-    agent --> skills
-    agent --> self
-    docs["📄 Your documents<br/>PDF · Word · email · notes"] --> ingest
-    notes --> ingest
-    ingest --> wiki
-    wiki ==> agent
-    brief --> you
-    exp --> dash
-    you -. view .-> dash
-
-    style brain fill:#10243f,stroke:#6ea8fe,stroke-width:4px,color:#e6f0ff
-    style wiki fill:#16365c,stroke:#6ea8fe,stroke-width:2px,color:#ffffff
-    style ingest fill:#13294a,stroke:#6ea8fe,color:#e6f0ff
-    style agent fill:#1d2630,stroke:#9aa0aa,stroke-width:2px,color:#ffffff
-    style you fill:#222,stroke:#9aa0aa,color:#fff
+   ╭──────────────────────────────────────────────────────────────────────────╮
+   │   ★  SECOND BRAIN PIPELINE   ──►   your own "LLM WIKI"   (separate repo)   │
+   ╰──────────────────────────────────────────────────────────────────────────╯
+        your documents & notes                            the agent can now
+        (PDF · Word · email · md)                         answer from its wiki
+                  │                                                 ▲
+                  ▼                                                 │
+        Parse ─► Extract ─► Compile ─► Lint  ─────►   brain/  ──────┘
+                                                  a queryable Markdown knowledge
+                                                  base — no RAG, no chunking,
+                                                  no vector DB
 ```
 
-<sub>The **Second Brain Pipeline** is its own branch: your documents (and the agent's notes) are
-compiled into an **LLM Wiki** — a plain-Markdown knowledge base the agent reads directly (no RAG, no
-vector DB). Everything else runs on one small VPS.</sub>
+<sub>The **Second Brain Pipeline** is its own branch and a **separate project with its own repo** —
+it compiles your documents into an **"LLM Wiki"** (`brain/`), a plain-Markdown knowledge base the
+agent reads directly. Everything else runs on one small VPS.</sub>
 
 ---
 
 ## ✨ What you get
 
-- **A personal agent on your own VPS** — runs 24/7 as a `systemd` service, costs ~€5–6/mo for the box.
+- **A personal agent on your own VPS** — built on the open-source **[Hermes agent](https://github.com/nousresearch/hermes-agent)** (by NousResearch): an LLM-driven assistant with a *skill* system, a *gateway* that connects chat platforms, and a *cron* scheduler. It runs 24/7 as a `systemd` service; the box costs ~€5–6/mo.
 - **Chat in the app you pick** — Telegram or Slack out of the box; WhatsApp Business, Discord, Signal and more as optional add-ons. **Choose one to start.**
 - **A cheap, capable brain (the LLM)** — [DeepSeek](https://platform.deepseek.com) by default: a `pro` tier and a ~3× cheaper `flash` tier you switch per message, with images routed to a vision model. Want to shop around? Point it at [OpenRouter](https://openrouter.ai) to A/B different models and **calculate which is most worth it** for your usage.
 - **Real productivity skills** — calendar, to-dos/reminders, email triage, web research with sources, YouTube transcripts, maps.
